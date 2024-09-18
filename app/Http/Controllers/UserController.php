@@ -35,15 +35,17 @@ class UserController extends Controller
         // UserModel::where('username', 'customer-1')->update($data); // update user data
         // // retrieves updated data
 
-        $data = [
-            'username' => 'manager_tiga',
-            'nama' => 'Manager 3',
-            'password' => Hash::make('12345'),
-            'level_id' => 2
-        ];
-        UserModel::create($data); 
+        // $data = [
+        //     'username' => 'manager_tiga',
+        //     'nama' => 'Manager 3',
+        //     'password' => Hash::make('12345'),
+        //     'level_id' => 2
+        // ];
+        // UserModel::create($data); 
 
-        $users = UserModel::all();
-        return view('user', ['data' => $users]); 
+        $user = UserModel::findOrFail(20, ['username', 'nama'], function () {
+            abort(404);
+        });
+        return view('user', ['data' => $user]); 
     }
 }
