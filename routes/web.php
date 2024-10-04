@@ -35,29 +35,16 @@ Route::get('/', function () {
 Route::get('/', [WelcomeController::class, 'index']);
 
 Route::group(['prefix' => 'user'], function () {
-    // menampilkan halaman awal user
-    Route::get('/', [UserController::class, 'index']);
-
-    // menampilkan data user dalam bentuk json untuk datatables
-    Route::post('/list', [UserController::class, 'list']);
-
-    // menampilkan halaman form tambah user
-    Route::get('/create', [UserController::class, 'create']);
-
-    // menyimpan data user baru
-    Route::post('/', [UserController::class, 'store']);
-
-    // menampilkan detail user
-    Route::get('/{id}', [UserController::class, 'show']);
-
-    // menampilkan halaman form edit user
-    Route::get('/{id}/edit', [UserController::class, 'edit']);
-
-    // menyimpan perubahan data user
-    Route::put('/{id}', [UserController::class, 'update']);
-
-    // menghapus data user
-    Route::post('/{id}', [UserController::class, 'destroy']);
+    Route::get('/', [UserController::class, 'index']);          // menampilkan halaman awal user
+    Route::post('/list', [UserController::class, 'list']);      // menampilkan data user dalam bentuk json untuk datatables
+    Route::get('/create', [UserController::class, 'create']);   // menampilkan halaman form tambah user
+    Route::post('/', [UserController::class, 'store']);         // menyimpan data user baru
+    Route::get('/create_ajax', [UserController::class, 'create_ajax']);   // menampilkan halaman form tambah user ajax
+    Route::post('/ajax', [UserController::class, 'store_ajax']);         // menyimpan data user baru ajax
+    Route::get('/{id}', [UserController::class, 'show']);       // menampilkan detail user
+    Route::get('/{id}/edit', [UserController::class, 'edit']);  // menampilkan halaman form edit user
+    Route::put('/{id}', [UserController::class, 'update']);     // menyimpan perubahan data user
+    Route::delete('/{id}', [UserController::class, 'destroy']); // menghapus data user
 });
 
 Route::group(['prefix' => 'level'], function () {
