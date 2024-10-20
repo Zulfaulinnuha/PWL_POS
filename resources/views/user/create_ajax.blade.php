@@ -31,6 +31,11 @@ user_ajax.blade.php
                     <small id="error-nama" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
+                    <label>Foto Profil</label>
+                    <input type="file" name="file_profil" id="file_profil" class="form-control" required>
+                    <small id="error-file_profil" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
                     <label>Password</label>
                     <input type="password" name="password" id="password" class="form-control" required>
                     <small id="error-password" class="error-text form-text text-danger"></small>
@@ -55,7 +60,10 @@ $(document).ready(function () {
             },
             password: {
                 required: true
-            }
+            },
+            file_profil: {
+                required: true,
+                extension: "jpg|jpeg|png|ico|bmp"
         },
         messages: {
             name: {
@@ -68,27 +76,18 @@ $(document).ready(function () {
                 required: "Password harus diisi"
             }
         },
-        errorElement: 'span',
-        errorPlacement: function (error, element) {
-            error.addClass('invalid-feedback');
-            element.closest('.form-group').append(error);
-        },
-        highlight: function (element, errorClass, validClass) {
-            $(element).addClass('is-invalid');
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $(element).removeClass('is-invalid');
-        },
+        
         submitHandler: function (form) {
             // Tambahkan log untuk memastikan submitHandler terpanggil
-            console.log('Submit handler triggered');
-            
+            var formData = new FormData(
+            form); // Jadikan form ke FormData untuk menghandle file 
             // Perubahan kecil untuk ajax request
             $.ajax({
-                type: "POST",
-                url: "/user/ajax", // Pastikan URL endpoint benar
-                data: $(form).serialize(), // Serialisasi data form
-                dataType: "json",
+                url: form.action,
+                type: form.method,
+                data: formData,
+                processData: false, // setting processData dan contentType ke false, untuk menghandle file 
+                contentType: false,
                 success: function (response) {
                     // Tambahkan log untuk memastikan respon diterima
                     console.log('Response received:', response);

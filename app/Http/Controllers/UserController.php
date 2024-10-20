@@ -1,179 +1,4 @@
 <?php
-
-// namespace App\Http\Controllers;
-
-// use Illuminate\Http\Request;
-// use App\Models\UserModel;
-// use Illuminate\Support\Facades\Hash;
-
-// class UserController extends Controller
-// {
-//     public function index()
-//     {
-        // coba akses model UserModel
-        // $user = UserModel::all(); // ambil semua data dari tabel m_user
-        // return view('user', ['data' => $user]);
-
-        // tambah data user dengan eloquent model
-        // $data = [
-        //     'username' => 'customer-1',
-        //     'nama' => 'Pelanggan',
-        //     'password' => Hash::make('12345'),
-        //     'level_id' => 3
-        // ];
-
-        // UserModel::insert($data); // tambahkan data ke tabel m_user
-
-        // // coba akses model UserModel
-        // $user = UserModel::all(); // ambil semua data dari tabel m_user
-        // return view('user', ['data' => $user]);
-
-        // tambah data user dengan Eloquent Model
-        // $data = [
-        //     'nama' => 'Pelanggan Pertama',
-        // ];
-        // UserModel::where('username', 'customer-1')->update($data); // update user data
-        // // retrieves updated data
-
-        // $data = [
-        //     'username' => 'manager_tiga',
-        //     'nama' => 'Manager 3',
-        //     'password' => Hash::make('12345'),
-        //     'level_id' => 2
-        // ];
-        // UserModel::create($data); 
-
-        // $user = UserModel::where('level_id', 2)->count();
-        // dd($user);
-
-        // $user = UserModel::firstOrCreate(
-        //     [
-        //         'username' => 'manager22',
-        //         'nama' => 'Manager Dua Dua',
-        //         'password' => Hash::make('12345'),
-        //         'level_id' => 2
-        //     ]
-        // );
-
-        // $user = UserModel::firstOrNew(
-        //     [
-        //         'username' => 'manager',
-        //         'nama' => 'Manager',
-        //     ]
-        // );
-
-        // $user = UserModel::firstOrNew(
-        //     [
-        //         'username' => 'manager33',
-        //         'nama' => 'Manager Tiga Tiga',
-        //         'password' => Hash::make('12345'),
-        //         'level_id' => 2
-        //     ]
-        // );
-
-        // $user->save();
-
-        // return view('user', ['data' => $user]); 
-
-        // $user = UserModel::create([
-        //     'username' => 'manager55',
-        //     'nama' => 'Manager55',
-        //     'password' => Hash::make('12345'),
-        //     'level_id' => 2,
-        // ]);
-
-        // $user->username = 'manager56';
-
-        // $user->isDirty(); // true
-        // $user->isDirty('username'); // true
-        // $user->isDirty('nama'); // false
-        // $user->isDirty(['nama', 'username']); // true
-
-        // $user->isClean(); // false
-        // $user->isClean('username'); // false
-        // $user->isClean('nama'); // true
-        // $user->isClean(['nama', 'username']); // false
-
-        // $user->save();
-
-        // $user->isDirty(); // false
-        // $user->isClean(); // true
-
-        // dd($user->isDirty());
-
-        // $user = UserModel::create([
-        //     'username' => 'manager11',
-        //     'nama' => 'Manager11',
-        //     'password' => Hash::make('12345'),
-        //     'level_id' => 2,
-        // ]);
-
-        // $user->username = 'manager12';
-
-        // $user->save();
-
-        // $user->wasChanged(); // true
-        // $user->wasChanged('username'); // true
-        // $user->wasChanged(['username', 'level_id']); // true
-        // $user->wasChanged('nama'); // false
-        // $user->wasChanged(['nama', 'username']); // true
-
-        // dd($user->wasChanged(['nama', 'username']));
-
-    //     $user = UserModel::all();
-    //     return view('user', ['data' => $user]);
-    // }
-    //     public function tambah()
-    // {
-    //     return view('user_tambah');
-    // }
-
-    // public function tambah_simpan(Request $request)
-    // {
-    // UserModel::create([
-    //     'username' => $request->username,
-    //     'nama' => $request->nama,
-    //     'password' => Hash::make($request->password),
-    //     'level_id' => $request->level_id
-    // ]);
-
-    // return redirect('/user');
-    // }
-
-    // public function ubah($id)
-    // {
-    // $user = UserModel::find($id);
-    // return view('user_ubah', ['data' => $user]);
-    // }
-
-    // public function ubah_simpan($id, Request $request)
-    // {
-    // $user = UserModel::find($id);
-
-    // $user->username = $request->username;
-    // $user->nama = $request->nama;
-    // $user->password = Hash::make($request->password);
-    // $user->level_id = $request->level_id;
-
-    // $user->save();
-
-    // return redirect('/user');
-    // }   
-
-    // public function hapus($id)
-    // {
-    // $user = UserModel::find($id);
-    // $user->delete();
-
-    // return redirect('/user');
-    // }
-
-//     $user = UserModel::with('level')->get();
-//     return view('user', ['data' => $user]);
-//     }
-// }
-
-// JOBSHEET 5
 namespace App\Http\Controllers;
 
 use App\Models\LevelModel;
@@ -182,6 +7,9 @@ use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 class UserController extends Controller
 {
     // Menampilkan halaman awal user
@@ -407,7 +235,8 @@ class UserController extends Controller
                 'level_id' => 'required|integer',
                 'username' => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
                 'nama' => 'required|max:100',
-                'password' => 'nullable|min:6|max:20'
+                'password' => 'nullable|min:6|max:20',
+                'file_profil' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             ];
             // Gunakan Illuminate\Support\Facades\Validator
             $validator = Validator::make($request->all(), $rules);
@@ -418,11 +247,40 @@ class UserController extends Controller
                     'msgField' => $validator->errors() // Menunjukkan field mana yang error
                 ]);
             }
+
+            // Define the file name using the user's id and the file extension
+            $fileExtension = $request->file('file_profil')->getClientOriginalExtension();
+            $fileName = 'profile_' . Auth::user()->user_id . '.' . $fileExtension;
+            // Check if an existing profile picture exists and delete it
+            $oldFile = 'profile_pictures/' . $fileName;
+            if (Storage::disk('public')->exists($oldFile)) {
+                Storage::disk('public')->delete($oldFile);
+            }
+
+            // Store the new file with the user id as the file name
+            $path = $request->file('file_profil')->storeAs('profile_pictures', $fileName, 'public');
+
+            $request['image_profile'] = $path;
             $check = UserModel::find($id);
             if ($check) {
-                if (!$request->filled('password')) { // Jika password tidak diisi, maka hapus dari request
-                    $request->request->remove('password');
+                if (!$request->filled('image_profile')) { // jika password tidak diisi, maka hapus dari request 
+                    $request->request->remove('image_profile');
                 }
+
+                 // Define the file name using the user's id and the file extension
+                 $fileExtension = $request->file('file_profil')->getClientOriginalExtension();
+                 $fileName = 'profile_' . Auth::user()->user_id . '.' . $fileExtension;
+ 
+                 // Check if an existing profile picture exists and delete it
+                 $oldFile = 'profile_pictures/' . $fileName;
+                 if (Storage::disk('public')->exists($oldFile)) {
+                     Storage::disk('public')->delete($oldFile);
+                 }
+ 
+                 // Store the new file with the user id as the file name
+                 $path = $request->file('file_profil')->storeAs('profile_pictures', $fileName, 'public');
+                 session(['profile_img_path' => $path]);
+ 
                 $check->update($request->all());
                 return response()->json([
                     'status' => true,
