@@ -23,7 +23,7 @@ ack">
     <div class="login-box">
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
-            <div class="card-header text-center"><a href="{{ url('/') }}" class="h1"><b>Admin</b>LTE</a></div>
+            <div class="card-header text-center"><a href="{{ url('/') }}" class="h1"><b>POS</b>TOSERBA</a></div>
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
                 @if (session('success'))

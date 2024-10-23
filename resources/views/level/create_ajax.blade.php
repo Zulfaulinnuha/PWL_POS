@@ -26,39 +26,54 @@
     </div>
 </form>
 <script>
+    // Menunggu dokumen siap di-load, lalu menjalankan kode di dalamnya
     $(document).ready(function() {
+        // Memvalidasi form dengan id "form-tambah" menggunakan jQuery validate
         $("#form-tambah").validate({
+            // Menetapkan aturan validasi untuk field level_kode dan level_nama
             rules: {
                 level_kode: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 20
+                    required: true,  // level_kode harus diisi
+                    minlength: 3,    // level_kode minimal harus 3 karakter
+                    maxlength: 20    // level_kode maksimal 20 karakter
                 },
                 level_nama: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 100
+                    required: true,  // level_nama harus diisi
+                    minlength: 3,    // level_nama minimal harus 3 karakter
+                    maxlength: 100   // level_nama maksimal 100 karakter
                 }
             },
+            // Jika validasi berhasil, maka form akan dikirim menggunakan AJAX
             submitHandler: function(form) {
                 $.ajax({
+                    // Mengambil URL dari action form yang akan diproses
                     url: form.action,
+                    // Mengambil metode HTTP yang digunakan (POST, GET, dsb.)
                     type: form.method,
+                    // Mengirimkan data form dengan serialize untuk dikirim ke server
                     data: $(form).serialize(),
+                    // Fungsi callback ketika AJAX sukses
                     success: function(response) {
+                        // Jika status response dari server sukses
                         if (response.status) {
+                            // Menyembunyikan modal setelah sukses
                             $('#myModal').modal('hide');
+                            // Menampilkan notifikasi sukses dengan SweetAlert
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
                                 text: response.message
                             });
+                            // Melakukan reload tabel data menggunakan dataLevel.ajax
                             dataLevel.ajax.reload();
                         } else {
+                            // Jika gagal, hapus pesan error lama
                             $('.error-text').text('');
+                            // Tampilkan pesan error pada input yang bermasalah
                             $.each(response.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
                             });
+                            // Menampilkan notifikasi kesalahan dengan SweetAlert
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan',
@@ -67,16 +82,20 @@
                         }
                     }
                 });
-                return false;
+                return false; // Menghentikan pengiriman form secara tradisional
             },
+            // Pengaturan elemen error, pesan error akan ditampilkan di dalam elemen span
             errorElement: 'span',
+            // Menempatkan pesan error di dekat elemen form yang error
             errorPlacement: function(error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
+                error.addClass('invalid-feedback');  // Menambahkan class untuk styling error
+                element.closest('.form-group').append(error);  // Menempatkan pesan error setelah elemen input
             },
+            // Jika validasi gagal, tambahkan class 'is-invalid' ke elemen input
             highlight: function(element, errorClass, validClass) {
                 $(element).addClass('is-invalid');
             },
+            // Jika validasi sukses, hapus class 'is-invalid' dari elemen input
             unhighlight: function(element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
             }
