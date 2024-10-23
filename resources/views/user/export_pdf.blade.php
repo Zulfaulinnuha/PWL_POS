@@ -1,5 +1,4 @@
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
@@ -59,12 +58,11 @@
         }
     </style>
 </head>
-
 <body>
     <table class="border-bottom-header">
-        <tr>
-        <td width="15%" class="text-center">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgOk1o9DKh__qOFazj2DSIJx7nP6Ei4C_eHA&s" alt="Logo" style="max-width: 100%; height: auto;">
+    <tr>
+    <td width="15%" class="text-center">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgOk1o9DKh__qOFazj2DSIJx7nP6Ei4C_eHA&s" alt="Logo" style="max-width: 100%; height: auto;">
     </td>
     <td width="85%">
                 <span class="text-center d-block font-11 font-bold mb-1">KEMENTERIAN
@@ -79,31 +77,26 @@
             </td>
         </tr>
     </table>
-    <h3 class="text-center">LAPORAN DATA BARANG</h4>
+    <h3 class="text-center">LAPORAN DATA USER</h4>
         <table class="border-all">
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th>Kode Barang</th>
-                    <th>Nama Barang</th>
-                    <th class="text-right">Harga Beli</th>
-                    <th class="text-right">Harga Jual</th>
-                    <th>Kategori</th>
+                    <th>Username</th>
+                    <th>Nama</th>
+                    <th>Level</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($barang as $b)
+                @foreach ($user as $b)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>{{ $b->barang_kode }}</td>
-                        <td>{{ $b->barang_nama }}</td>
-                        <td class="text-right">{{ number_format($b->harga_beli, 0, ',', '.') }}</td>
-                        <td class="text-right">{{ number_format($b->harga_jual, 0, ',', '.') }}</td>
-                        <td>{{ $b->kategori->kategori_nama }}</td>
+                        <td>{{ $b->username }}</td>
+                        <td>{{ $b->nama }}</td>
+                        <td>{{ $b->level->level_nama }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 </body>
-
 </html>

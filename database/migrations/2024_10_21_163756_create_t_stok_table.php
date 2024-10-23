@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('t_stok', function (Blueprint $table) {
             $table->id('stok_id');
-            $table->unsignedBigInteger('barang_id')->index(); //indexing untuk foreign key
-            $table->unsignedBigInteger('user_id')->index(); //indexing untuk foreign key
+            $table->unsignedBigInteger('supplier_id')->index(); // indexing untuk ForeignKey
+            $table->unsignedBigInteger('barang_id')->index(); // indexing untuk ForeignKey
+            $table->unsignedBigInteger('user_id')->index(); // indexing untuk ForeignKey
             $table->dateTime('stok_tanggal');
             $table->integer('stok_jumlah');
             $table->timestamps();
 
+            $table->foreign('supplier_id')->references('supplier_id')->on('m_supplier');
             $table->foreign('barang_id')->references('barang_id')->on('m_barang');
             $table->foreign('user_id')->references('user_id')->on('m_user');
-
         });
     }
 
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('t_stok');
+        Schema::dropIfExists('t_stock');
     }
 };

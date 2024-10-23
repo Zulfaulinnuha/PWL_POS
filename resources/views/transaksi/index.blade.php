@@ -1,17 +1,12 @@
 @extends('layouts.template')
+
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Daftar kategori</h3>
+            <h3 class="card-title">Daftar transaksi</h3>
             <div class="card-tools">
-            <!-- Import Kategori Button -->
-            <button onclick="modalAction(`{{ url('/kategori/import') }}`)" class="btn btn-info">Import Kategori</button>
-            <!-- Export Excel Kategori Button -->
-            <a href="{{ url('/kategori/export_excel') }}" class="btn btn-primary" ><i class="fa fa-file-excel"></i> Export Kategori</a>
-            <!-- Export PDF Kategori Button -->
-            <a href="{{ url('/kategori/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export Kategori</a>
-            <!-- Tambah Ajax Button -->
-            <button onclick="modalAction(`{{ url('/kategori/create_ajax') }}`)" class="btn btn-success">Tambah Ajax</button>
+                <a href="{{ url('/transaksi/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export Transaksi</a>
+                <button onclick="modalAction(`{{ url('/transaksi/create_ajax') }}`)" class="btn btn-success">Tambah Ajax</button>
             </div>
         </div>
         <div class="card-body">
@@ -21,12 +16,14 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <table class="table table-bordered table-sm table-striped table-hover" id="table-kategori">
+            <table class="table table-bordered table-sm table-striped table-hover" id="table-transaksi">
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Kode kategori</th>
-                        <th>Nama kategori</th>
+                        <th>User</th>
+                        <th>Pembeli</th>
+                        <th>Penjualan Kode</th>
+                        <th>Penjualan Tanggal</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -37,6 +34,7 @@
     <div id="myModal" class="modal fade animate shake" tabindex="-1" data-backdrop="static" data-keyboard="false"
         data-width="75%"></div>
 @endsection
+
 @push('js')
     <script>
         function modalAction(url = '') {
@@ -44,13 +42,13 @@
                 $('#myModal').modal('show');
             });
         }
-        var tableKategori;
+        var dataTransaksi;
         $(document).ready(function() {
-            tableKategori = $('#table-kategori').DataTable({
+            dataTransaksi = $('#table-transaksi').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    "url": "{{ url('kategori/list') }}",
+                    "url": "{{ url('transaksi/list') }}",
                     "dataType": "json",
                     "type": "POST",
                     "data": function(d) {
@@ -58,24 +56,48 @@
                     }
                 },
                 columns: [{
-                    data: "kategori_id",
+                    // nomor urut dari laravel datatable addIndexColumn() 
+                    data: "DT_RowIndex",
                     className: "text-center",
                     width: "5%",
                     orderable: false,
                     searchable: false
-                },{
-                    data: "kategori_kode",
+                }, {
+                    data: "user.nama",
                     className: "",
                     width: "10%",
                     orderable: true,
                     searchable: true
                 }, {
-                    data: "kategori_nama",
+                    data: "pembeli",
                     className: "",
-                    width: "37%",
+                    width: "25%",
                     orderable: true,
                     searchable: true,
                 }, {
+                    data: "penjualan_kode",
+                    className: "",
+                    width: "12%",
+                    orderable: true,
+                    searchable: true,
+                }, {
+                    data: "penjualan_tanggal",
+                    className: "",
+                    width: "12%",
+                    orderable: true,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        if (data) {
+                            var date = new Date(data);
+                            var year = date.getFullYear();
+                            var month = ("0" + (date.getMonth() + 1)).slice(-
+                                2); 
+                            var day = ("0" + date.getDate()).slice(-2); 
+                            return year + "-" + month + "-" + day; 
+                        }
+                        return data; 
+                    }
+                },{
                     data: "aksi",
                     className: "text-center",
                     width: "14%",
@@ -83,13 +105,13 @@
                     searchable: false
                 }]
             });
-            $('#table-kategori_filter input').unbind().bind().on('keyup', function(e) {
-                if (e.keyCode == 13) { // enter key
-                    tableKategori.search(this.value).draw();
+            $('#table-transaksi_filter input').unbind().bind().on('keyup', function(e) {
+                if (e.keyCode == 13) { 
+                    tableTransaksi.search(this.value).draw();
                 }
             });
             $('.filter_kategori').change(function() {
-                tableKategori.draw();
+                tableTransaksi.draw();
             });
         });
     </script>
