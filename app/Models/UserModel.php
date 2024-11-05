@@ -5,37 +5,44 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Yajra\DataTables\Html\Editor\Fields\Hidden;
+use Illuminate\Foundation\Auth\User as Authenticable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-
-class UserModel extends Authenticatable
+class UserModel extends Authenticable implements JWTSubject
 {
     use HasFactory;
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return[];
+    }
+
     protected $table = 'm_user';        // Mendefinisikan nama tabel yang digunakan oleh model ini
     protected $primaryKey = 'user_id';  // Mendefinisikan primary key dari tabel yang digunakan
+
     protected $fillable = ['level_id', 'username', 'nama', 'password', 'avatar', 'created_at', 'updated_at'];
 
-    protected $hidden = ['password']; // jangan di tampilkan saat select
+    protected $hidden = ['password']; // jangan ditampilkan saat select
 
     protected $casts = ['password' => 'hashed']; // casting password agar otomatis di hash
-
-    /**
-     * Relasi ke tabel level
-     */
-
 
     public function level(): BelongsTo
     {
         return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
     }
 
-    //Mendapatkan nama role
+    // Mendapatkan nama role
     public function getRoleName(): string {
         return $this->level->level_nama;
     }
 
-    //Cek apakah user memiliki role tertentu
+    // Cek apakah user memiliki role tertentu
     public function hasRole($role): bool {
         return $this->level->level_kode == $role;
     }
