@@ -64,8 +64,10 @@
                                     <small class="badge badge-success" style="background-color: #205989;">
                                         Harga {{ number_format($detail->harga) }}
                                     </small>
-
-
+                                    @if ($detail->barang->image)
+                                        <img id="profile-picture" src="{{ $detail->barang->image }}" alt="Barang picture"
+                                            class="brand-image img-circle">
+                                    @endif
                                 </li>
                             @endforeach
                         </ul>
